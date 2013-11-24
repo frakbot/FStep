@@ -30,6 +30,7 @@ public class FStepService extends Service implements SensorEventListener {
 
     @Override
     public void onCreate() {
+        Log.v("FStepService", "Creating the service");
         super.onCreate();
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -37,15 +38,17 @@ public class FStepService extends Service implements SensorEventListener {
         mUiHandler = new Handler(Looper.getMainLooper());
 
         // TODO: use a worker thread
-        mSensorManager.registerListener(this, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL, 120000000);
+        mSensorManager.registerListener(this, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL/*, 120000000*/);
     }
 
     public IBinder onBind(Intent intent) {
+        Log.v("FStepService", "Binding the service");
         return mBinder;
     }
 
     @Override
     public void onDestroy() {
+        Log.v("FStepService", "Destroying the service");
         super.onDestroy();
         mSensorManager.unregisterListener(this);
     }
@@ -83,12 +86,13 @@ public class FStepService extends Service implements SensorEventListener {
     }
 
     public void unregisterListener(StepCountListener l) {
+        Log.v("FStepService", "Unregistering a listener");
         mListeners.remove(l);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        Log.v("FStepService", "Sensor accuracy changed. New value: " + accuracy);
     }
 
     public class LocalBinder extends Binder {

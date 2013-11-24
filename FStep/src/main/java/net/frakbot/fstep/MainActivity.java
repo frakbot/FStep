@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 
@@ -107,6 +108,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.d("MainActivity", "Connected to the FStepService");
                 mFSService = ((FStepService.LocalBinder)service).getService();
                 mFSService.registerListener(PlaceholderFragment.this);
             }
@@ -114,6 +116,7 @@ public class MainActivity extends Activity {
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 mFSService = null;
+                Log.d("MainActivity", "The FStepService has disconnected");
             }
         }
     }
