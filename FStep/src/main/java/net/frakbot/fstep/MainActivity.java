@@ -8,7 +8,10 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -33,26 +36,6 @@ public class MainActivity extends Activity {
         startService(new Intent(this, FStepService.class));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -60,8 +43,9 @@ public class MainActivity extends Activity {
 
         private final PlaceholderFragment.FSSConnection mFSSConnection;
 
-        private TextView mStepsCountText;
+        private TextView mTxtStepsCount, mTxtStepsDetectedCount, mTxtStepEvent;
         private FStepService mFSService;
+        private ViewPropertyAnimator mStepEventAnim;
 
         public PlaceholderFragment() {
             mFSSConnection = new FSSConnection();
@@ -73,7 +57,12 @@ public class MainActivity extends Activity {
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            mStepsCountText = (TextView) rootView.findViewById(R.id.txt_steps_count);
+            mTxtStepsCount = (TextView) rootView.findViewById(R.id.txt_steps_count);
+            mTxtStepEvent = (TextView) rootView.findViewById(R.id.txt_step_event);
+            mTxtStepsDetectedCount = (TextView) rootView.findViewById(R.id.txt_steps_detected_count);
+
+            mTxtStepEvent.setAlpha(0f);
+
             return rootView;
         }
 
@@ -91,7 +80,9 @@ public class MainActivity extends Activity {
         public void onPause() {
             super.onPause();
 
-            mFSService.unregisterListener(PlaceholderFragment.this);
+            if (mFSService != null) {
+                mFSService.unregisterListener(PlaceholderFragment.this);
+            }
 
             final Activity activity = getActivity();
             if (activity != null) {
@@ -101,7 +92,17 @@ public class MainActivity extends Activity {
 
         @Override
         public void onStepDataUpdate(int stepCount) {
-            mStepsCountText.setText(String.valueOf(stepCount));
+            mTxtStepsCount.setText(String.valueOf(stepCount));
+        }
+
+        @Override
+        public void onStep(int count) {
+            if (mStepEventAnim != null) {
+                mStepEventAnim.cancel();
+            }
+            mTxtStepsDetectedCount.setText(String.valueOf(count));
+            mTxtStepEvent.setAlpha(1f);
+            mStepEventAnim = mTxtStepEvent.animate().setDuration(500).alpha(0f);
         }
 
         private class FSSConnection implements ServiceConnection {
@@ -109,7 +110,7 @@ public class MainActivity extends Activity {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Log.d("MainActivity", "Connected to the FStepService");
-                mFSService = ((FStepService.LocalBinder)service).getService();
+                mFSService = ((FStepService.LocalBinder) service).getService();
                 mFSService.registerListener(PlaceholderFragment.this);
             }
 

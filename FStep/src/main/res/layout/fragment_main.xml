@@ -6,15 +6,54 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:gravity="center"
     tools:context=".MainActivity$PlaceholderFragment">
 
     <TextView
             android:id="@+id/txt_steps_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:textSize="90sp"
             android:textStyle="bold"
             tools:text="0"/>
+
+    <TextView
+            android:id="@+id/txt_steps_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_steps_count"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:text="COUNTED SO FAR"/>
+
+    <TextView
+            android:id="@+id/txt_steps_detected_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_steps_count_label"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="36dp"
+            android:textSize="90sp"
+            android:textStyle="bold"
+            android:text="0"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_steps_detected_count"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:text="DETECTED SO FAR"/>
+
+    <TextView
+            android:id="@+id/txt_step_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="8dp"
+            android:gravity="center"
+            android:text="STEP"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
 
 </RelativeLayout>
